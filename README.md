@@ -4,6 +4,8 @@ A simple Snake game implemented using [Compose for Desktop](https://github.com/J
 
 Run: `./gradlew run`
 
+<img src="./assets/CompoSnake.gif" width="396">
+
 ## Author
 
 Twitter: [@arkann1985](https://twitter.com/arkann1985)
