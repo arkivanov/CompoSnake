@@ -27,14 +27,20 @@ import androidx.compose.ui.window.application
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
-val rowWidth = 400.dp
-val rowHeight = rowWidth
+// These provide margins between the main box and the outer window.
+val rowPadding = 8.dp
+val colPadding = rowPadding
+
+// These make the cells an attractive size.
+val cellWidth = 24.dp
+val cellHeight = cellWidth
+val cellModifier = Modifier.width(cellWidth).height(cellHeight)
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
     val game: Game = DefaultGame()
     val focusRequester = FocusRequester()
-    val delay = 2000L
+    val delay = 400L
 
     Window(
         state = WindowState(size = DpSize.Unspecified),
@@ -65,8 +71,7 @@ fun main() = application {
                     }
             )
 
-            Box(modifier = Modifier
-                .size(rowWidth, rowHeight),
+            Box(
                 contentAlignment = Alignment.Center
             ) {
                 Board(game.board.value)
@@ -86,12 +91,12 @@ private fun Board(board: Board) {
         return
     }
 
-    Column {
+    Column(
+        modifier = Modifier.padding(colPadding)
+    ) {
         board.grid.forEachFast { row ->
             Row(
-                modifier = Modifier
-                    .width(rowWidth)
-                    .padding(horizontal = 8.dp)
+                modifier = Modifier.padding(horizontal = rowPadding)
             ) {
                 row.forEachFast { cell ->
                     when (cell) {
@@ -104,8 +109,6 @@ private fun Board(board: Board) {
         }
     }
 }
-
-val cellModifier = Modifier.width(24.dp).height(24.dp).padding(10.dp)
 
 @Composable
 private fun FoodCell() {
