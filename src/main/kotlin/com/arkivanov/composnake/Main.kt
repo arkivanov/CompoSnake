@@ -1,7 +1,6 @@
 package com.arkivanov.composnake
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
@@ -15,15 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
@@ -41,7 +37,7 @@ fun main() = application {
     val delay = 2000L
 
     Window(
-        state = WindowState(size = DpSize(500.dp, 500.dp)),
+        state = WindowState(size = DpSize.Unspecified),
         onCloseRequest = ::exitApplication,
         title = "CompoSnake"
     ) {
@@ -70,9 +66,7 @@ fun main() = application {
             )
 
             Box(modifier = Modifier
-                .focusRequester(focusRequester)
-                .focusTarget(),
-              //  modifier = Modifier.fillMaxSize(),
+                .size(rowWidth, rowHeight),
                 contentAlignment = Alignment.Center
             ) {
                 Board(game.board.value)
@@ -94,7 +88,11 @@ private fun Board(board: Board) {
 
     Column {
         board.grid.forEachFast { row ->
-            Row(Modifier.width(rowWidth).padding(horizontal = 8.dp)) {
+            Row(
+                modifier = Modifier
+                    .width(rowWidth)
+                    .padding(horizontal = 8.dp)
+            ) {
                 row.forEachFast { cell ->
                     when (cell) {
                         board.food -> FoodCell()
@@ -112,7 +110,7 @@ val cellModifier = Modifier.width(24.dp).height(24.dp).padding(10.dp)
 @Composable
 private fun FoodCell() {
     RadioButton(
- //       modifier = cellModifier,
+        modifier = cellModifier,
         selected = true,
         onClick = {},
         colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.primary)
@@ -122,7 +120,7 @@ private fun FoodCell() {
 @Composable
 private fun EmptyCell() {
     Checkbox(
-//        modifier = cellModifier,
+        modifier = cellModifier,
         checked = false,
         onCheckedChange = {}
     )
@@ -132,7 +130,7 @@ private fun EmptyCell() {
 private fun SnakeCell(isHead: Boolean) {
     Checkbox(
         checked = true,
-//        modifier = cellModifier,
+        modifier = cellModifier,
         colors = CheckboxDefaults.colors(
             checkedColor = if (isHead) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
         ),
