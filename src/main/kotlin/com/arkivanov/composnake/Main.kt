@@ -28,13 +28,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
 // These provide margins between the main box and the outer window.
-val rowPadding = 8.dp
-val colPadding = rowPadding
+val ROW_PADDING = 8.dp
+val COL_PADDING = ROW_PADDING
 
 // These make the cells an attractive size.
-val cellWidth = 24.dp
-val cellHeight = cellWidth
-val cellModifier = Modifier.width(cellWidth).height(cellHeight)
+val CELL_WIDTH = 24.dp
+val CELL_HEIGHT = CELL_WIDTH
+val CELL_MODIFIER = Modifier.width(CELL_WIDTH).height(CELL_HEIGHT)
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
@@ -92,11 +92,11 @@ private fun Board(board: Board) {
     }
 
     Column(
-        modifier = Modifier.padding(colPadding)
+        modifier = Modifier.padding(COL_PADDING)
     ) {
         board.grid.forEachFast { row ->
             Row(
-                modifier = Modifier.padding(horizontal = rowPadding)
+                modifier = Modifier.padding(horizontal = ROW_PADDING)
             ) {
                 row.forEachFast { cell ->
                     when (cell) {
@@ -113,7 +113,7 @@ private fun Board(board: Board) {
 @Composable
 private fun FoodCell() {
     RadioButton(
-        modifier = cellModifier,
+        modifier = CELL_MODIFIER,
         selected = true,
         onClick = {},
         colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.primary)
@@ -123,7 +123,7 @@ private fun FoodCell() {
 @Composable
 private fun EmptyCell() {
     Checkbox(
-        modifier = cellModifier,
+        modifier = CELL_MODIFIER,
         checked = false,
         onCheckedChange = {}
     )
@@ -133,7 +133,7 @@ private fun EmptyCell() {
 private fun SnakeCell(isHead: Boolean) {
     Checkbox(
         checked = true,
-        modifier = cellModifier,
+        modifier = CELL_MODIFIER,
         colors = CheckboxDefaults.colors(
             checkedColor = if (isHead) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
         ),
