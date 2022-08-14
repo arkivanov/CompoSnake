@@ -5,12 +5,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 
 class DefaultGame : Game {
-    private val width = 16
-    private val height = width
     private val _board: MutableState<Board>
     private val randomPointGenerator: RandomPointGenerator
 
     init {
+        val width = 16
+        val height = width
         val cy = height / 2
 
         val snake =

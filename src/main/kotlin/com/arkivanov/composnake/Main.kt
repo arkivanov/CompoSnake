@@ -27,20 +27,13 @@ import androidx.compose.ui.window.application
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
-// These provide margins between the main box and the outer window.
-val ROW_PADDING = 8.dp
-val COL_PADDING = ROW_PADDING
-
 // These make the cells an attractive size.
-val CELL_WIDTH = 24.dp
-val CELL_HEIGHT = CELL_WIDTH
-val CELL_MODIFIER = Modifier.width(CELL_WIDTH).height(CELL_HEIGHT)
+private val CELL_SIZE = 24.dp
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
     val game: Game = DefaultGame()
     val focusRequester = FocusRequester()
-    val delay = 400L
 
     Window(
         state = WindowState(size = DpSize.Unspecified),
@@ -51,7 +44,7 @@ fun main() = application {
             LaunchedEffect(Unit) {
                 focusRequester.requestFocus()
                 while (isActive) {
-                    delay(delay)
+                    delay(400L)
                     game.step()
                 }
             }
@@ -92,11 +85,11 @@ private fun Board(board: Board) {
     }
 
     Column(
-        modifier = Modifier.padding(COL_PADDING)
+        modifier = Modifier.padding(vertical = 32.dp)
     ) {
         board.grid.forEachFast { row ->
             Row(
-                modifier = Modifier.padding(horizontal = ROW_PADDING)
+                modifier = Modifier.padding(horizontal = 32.dp)
             ) {
                 row.forEachFast { cell ->
                     when (cell) {
@@ -113,7 +106,7 @@ private fun Board(board: Board) {
 @Composable
 private fun FoodCell() {
     RadioButton(
-        modifier = CELL_MODIFIER,
+        modifier = Modifier.size(CELL_SIZE),
         selected = true,
         onClick = {},
         colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.primary)
@@ -123,7 +116,7 @@ private fun FoodCell() {
 @Composable
 private fun EmptyCell() {
     Checkbox(
-        modifier = CELL_MODIFIER,
+        modifier = Modifier.size(CELL_SIZE),
         checked = false,
         onCheckedChange = {}
     )
@@ -133,7 +126,7 @@ private fun EmptyCell() {
 private fun SnakeCell(isHead: Boolean) {
     Checkbox(
         checked = true,
-        modifier = CELL_MODIFIER,
+        modifier = Modifier.size(CELL_SIZE),
         colors = CheckboxDefaults.colors(
             checkedColor = if (isHead) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
         ),
