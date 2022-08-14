@@ -1,11 +1,8 @@
 package com.arkivanov.composnake
 
-import androidx.compose.desktop.Window
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.MaterialTheme
@@ -15,30 +12,44 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowState
+import androidx.compose.ui.window.application
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
-fun main() {
+val rowWidth = 400.dp
+val rowHeight = rowWidth
+
+@OptIn(ExperimentalComposeUiApi::class)
+fun main() = application {
     val game: Game = DefaultGame()
     val focusRequester = FocusRequester()
+    val delay = 2000L
 
     Window(
-        size = IntSize(width = 500, height = 500),
+        state = WindowState(size = DpSize.Unspecified),
+        onCloseRequest = ::exitApplication,
         title = "CompoSnake"
     ) {
         MaterialTheme {
             LaunchedEffect(Unit) {
                 focusRequester.requestFocus()
                 while (isActive) {
-                    delay(200L)
+                    delay(delay)
                     game.step()
                 }
             }
@@ -46,7 +57,7 @@ fun main() {
             Box(
                 modifier = Modifier
                     .focusRequester(focusRequester)
-                    .focusModifier()
+                    .focusTarget()
                     .onKeyEvent {
                         when (it.key) {
                             Key.DirectionLeft -> game.setDirection(Direction.LEFT).let { true }
@@ -58,8 +69,12 @@ fun main() {
                     }
             )
 
-            Box(
-                modifier = Modifier.fillMaxSize(),
+            Box(modifier = Modifier
+                .width(rowWidth)
+                .height(rowHeight)
+                .focusRequester(focusRequester)
+                .focusTarget(),
+              //  modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Board(game.board.value)
@@ -81,7 +96,7 @@ private fun Board(board: Board) {
 
     Column {
         board.grid.forEachFast { row ->
-            Row {
+            Row(Modifier.width(rowWidth).padding(horizontal = 8.dp)) {
                 row.forEachFast { cell ->
                     when (cell) {
                         board.food -> FoodCell()
@@ -94,9 +109,12 @@ private fun Board(board: Board) {
     }
 }
 
+val cellModifier = Modifier.width(24.dp).height(24.dp).padding(10.dp)
+
 @Composable
 private fun FoodCell() {
     RadioButton(
+        modifier = cellModifier,
         selected = true,
         onClick = {},
         colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.primary)
@@ -106,6 +124,7 @@ private fun FoodCell() {
 @Composable
 private fun EmptyCell() {
     Checkbox(
+        modifier = cellModifier,
         checked = false,
         onCheckedChange = {}
     )
@@ -115,6 +134,7 @@ private fun EmptyCell() {
 private fun SnakeCell(isHead: Boolean) {
     Checkbox(
         checked = true,
+        modifier = cellModifier,
         colors = CheckboxDefaults.colors(
             checkedColor = if (isHead) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
         ),
