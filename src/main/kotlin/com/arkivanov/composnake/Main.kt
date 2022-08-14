@@ -41,7 +41,7 @@ fun main() = application {
     val delay = 2000L
 
     Window(
-        state = WindowState(size = DpSize.Unspecified),
+        state = WindowState(size = DpSize(500.dp, 500.dp)),
         onCloseRequest = ::exitApplication,
         title = "CompoSnake"
     ) {
@@ -70,8 +70,6 @@ fun main() = application {
             )
 
             Box(modifier = Modifier
-                .width(rowWidth)
-                .height(rowHeight)
                 .focusRequester(focusRequester)
                 .focusTarget(),
               //  modifier = Modifier.fillMaxSize(),
@@ -114,7 +112,7 @@ val cellModifier = Modifier.width(24.dp).height(24.dp).padding(10.dp)
 @Composable
 private fun FoodCell() {
     RadioButton(
-        modifier = cellModifier,
+ //       modifier = cellModifier,
         selected = true,
         onClick = {},
         colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.primary)
@@ -124,7 +122,7 @@ private fun FoodCell() {
 @Composable
 private fun EmptyCell() {
     Checkbox(
-        modifier = cellModifier,
+//        modifier = cellModifier,
         checked = false,
         onCheckedChange = {}
     )
@@ -134,7 +132,7 @@ private fun EmptyCell() {
 private fun SnakeCell(isHead: Boolean) {
     Checkbox(
         checked = true,
-        modifier = cellModifier,
+//        modifier = cellModifier,
         colors = CheckboxDefaults.colors(
             checkedColor = if (isHead) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
         ),
