@@ -1,11 +1,7 @@
 package com.arkivanov.composnake
 
-import androidx.compose.desktop.Window
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.MaterialTheme
@@ -15,30 +11,40 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowState
+import androidx.compose.ui.window.application
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
-fun main() {
+// These make the cells an attractive size.
+private val CELL_SIZE = 24.dp
+
+@OptIn(ExperimentalComposeUiApi::class)
+fun main() = application {
     val game: Game = DefaultGame()
     val focusRequester = FocusRequester()
 
     Window(
-        size = IntSize(width = 500, height = 500),
+        state = WindowState(size = DpSize.Unspecified),
+        onCloseRequest = ::exitApplication,
         title = "CompoSnake"
     ) {
         MaterialTheme {
             LaunchedEffect(Unit) {
                 focusRequester.requestFocus()
                 while (isActive) {
-                    delay(200L)
+                    delay(400L)
                     game.step()
                 }
             }
@@ -46,7 +52,7 @@ fun main() {
             Box(
                 modifier = Modifier
                     .focusRequester(focusRequester)
-                    .focusModifier()
+                    .focusTarget()
                     .onKeyEvent {
                         when (it.key) {
                             Key.DirectionLeft -> game.setDirection(Direction.LEFT).let { true }
@@ -59,7 +65,6 @@ fun main() {
             )
 
             Box(
-                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Board(game.board.value)
@@ -79,9 +84,13 @@ private fun Board(board: Board) {
         return
     }
 
-    Column {
+    Column(
+        modifier = Modifier.padding(vertical = 32.dp)
+    ) {
         board.grid.forEachFast { row ->
-            Row {
+            Row(
+                modifier = Modifier.padding(horizontal = 32.dp)
+            ) {
                 row.forEachFast { cell ->
                     when (cell) {
                         board.food -> FoodCell()
@@ -97,6 +106,7 @@ private fun Board(board: Board) {
 @Composable
 private fun FoodCell() {
     RadioButton(
+        modifier = Modifier.size(CELL_SIZE),
         selected = true,
         onClick = {},
         colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colors.primary)
@@ -106,6 +116,7 @@ private fun FoodCell() {
 @Composable
 private fun EmptyCell() {
     Checkbox(
+        modifier = Modifier.size(CELL_SIZE),
         checked = false,
         onCheckedChange = {}
     )
@@ -115,6 +126,7 @@ private fun EmptyCell() {
 private fun SnakeCell(isHead: Boolean) {
     Checkbox(
         checked = true,
+        modifier = Modifier.size(CELL_SIZE),
         colors = CheckboxDefaults.colors(
             checkedColor = if (isHead) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
         ),
