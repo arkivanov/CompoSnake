@@ -1,7 +1,10 @@
 package com.arkivanov.composnake
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.MaterialTheme
@@ -36,7 +39,7 @@ fun main() = application {
     val focusRequester = FocusRequester()
 
     Window(
-        state = WindowState(size = DpSize.Unspecified),
+        state = WindowState(size = DpSize(500.dp, 500.dp)),
         onCloseRequest = ::exitApplication,
         title = "CompoSnake"
     ) {
@@ -73,7 +76,6 @@ fun main() = application {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Board(board: Board) {
     if (board.snake == null) {
@@ -84,18 +86,19 @@ private fun Board(board: Board) {
         return
     }
 
-    Column(
-        modifier = Modifier.padding(vertical = 32.dp)
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
-        board.grid.forEachFast { row ->
-            Row(
-                modifier = Modifier.padding(horizontal = 32.dp)
-            ) {
-                row.forEachFast { cell ->
-                    when (cell) {
-                        board.food -> FoodCell()
-                        in board.snake.points -> SnakeCell(isHead = cell == board.snake.head)
-                        else -> EmptyCell()
+        Column {
+            board.grid.forEachFast { row ->
+                Row {
+                    row.forEachFast { cell ->
+                        when (cell) {
+                            board.food -> FoodCell()
+                            in board.snake.points -> SnakeCell(isHead = cell == board.snake.head)
+                            else -> EmptyCell()
+                        }
                     }
                 }
             }
